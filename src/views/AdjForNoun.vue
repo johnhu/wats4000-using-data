@@ -1,16 +1,21 @@
 <template>
-  <div class="rhymesaurus">
+  <div class="adjfornoun">
      <p>
-      <router-link to="/adjfornoun">Adjective for Noun</router-link>
+      <router-link to="/">Home: Rhymesaurus</router-link>
       </p>
-    <h2>Rhymesaurus: The Rhyming Thesaurus</h2>
-   
+    <h2>Adjective for Noun</h2>
     <form v-on:submit.prevent="findWords">
-      <p>Find rhymes for <input type="text" v-model="rhyme"> related to <input type="text" v-model="phrase"> <button type="submit">Search</button></p>
+      <p>
+        Find an Adjective for a given Noun
+        <input type="text" v-model="noun" />
+        <button type="submit">Search</button>
+      </p>
     </form>
     <ul class="results" v-if="results && results.length > 0">
       <li class="item" v-for="(item, index) of results" :key="index">
-        <p><strong>{{item.word}}</strong></p>
+        <p>
+          <strong>{{item.word}}</strong>
+        </p>
         <p>{{item.score}}</p>
       </li>
     </ul>
@@ -21,55 +26,51 @@
     </div>
 
     <ul class="errors" v-if="errors && errors.length > 0">
-      <li v-for="(error, index) of errors" :key="index">
-        {{error.message}}
-      </li>
+      <li v-for="(error, index) of errors" :key="index">{{error.message}}</li>
     </ul>
   </div>
 </template>
 
 <script>
 // TODO: Import axios properly here.
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'Rhymesaurus',
-  data () {
+  name: "AdjForNoun",
+  data() {
     return {
       results: null,
       errors: [],
-      phrase: '',
-      rhyme: ''
-    }
+      noun: ""
+    };
   },
- //methods is key for object, findWords defines function() object
+  //methods is key for object, findWords defines function() object
   methods: {
-    findWords: function (){
-      axios.get('https://api.datamuse.com/words', {
-      params: {
-        ml: this.phrase,
-        rel_rhy: this.rhyme
-      }
-    })
-    //passes function() to axios.then to process successfully returned data
-    .then(response =>{
-      this.results = response.data
-    })
-    .catch(error =>{
-      this.errors.push(error)
-    })
-  } 
+    findWords: function() {
+      axios
+        .get("https://api.datamuse.com/words", {
+          params: {
+            rel_jjb: this.noun
+          }
+        })
+        //passes function() to axios.then to process successfully returned data
+        .then(response => {
+          this.results = response.data;
+        })
+        .catch(error => {
+          this.errors.push(error);
+        });
+    }
   }
-
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.rhymesaurus {
+.adjfornoun {
   font-size: 1.4rem;
 }
-input[type="text"]{
+input[type="text"] {
   border-top: none;
   border-left: none;
   border-right: none;
@@ -78,10 +79,10 @@ input[type="text"]{
   font-size: 1.4rem;
   color: #2c3e50;
   font-weight: 300;
-  background: rgba(0,0,0,0.02);
+  background: rgba(0, 0, 0, 0.02);
   padding: 0.5rem;
 }
-button{
+button {
   background: #333;
   padding: 0.5rem;
   font-weight: 300;
@@ -90,7 +91,8 @@ button{
   cursor: pointer;
   font-size: 1.4rem;
 }
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 ul.results {
@@ -105,7 +107,7 @@ ul.results {
   width: 200px;
   min-height: 100px;
   color: #fff;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
 }
 ul.errors {
   list-style-type: none;
